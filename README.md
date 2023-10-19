@@ -1,4 +1,14 @@
-# react-sticky [![Build Status](https://travis-ci.org/captivationsoftware/react-sticky.svg?branch=master)](https://travis-ci.org/captivationsoftware/react-sticky)
+# react-sticky-pro [![Build Status](https://travis-ci.org/captivationsoftware/react-sticky-pro.svg?branch=master)](https://travis-ci.org/captivationsoftware/react-sticky-pro)
+
+> Fork自react-sticky，在其基础上给StickyContainer增加了target属性，用于指定监听滚动的dom
+如：
+
+```js
+<StickyContainer target={document.getElementById('root')}>
+  <Sticky>{({ style }) => <h1 style={style}>Sticky element</h1>}</Sticky>
+</StickyContainer>
+```
+
 
 Make your React components sticky!
 
