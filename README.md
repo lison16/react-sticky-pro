@@ -1,4 +1,4 @@
-# react-sticky-pro [![Build Status](https://travis-ci.org/captivationsoftware/react-sticky-pro.svg?branch=master)](https://travis-ci.org/captivationsoftware/react-sticky-pro)
+# react-sticky-pro [![Build Status](https://travis-ci.org/lison16/react-sticky-pro.svg?branch=master)](https://travis-ci.org/lison16/react-sticky-pro)
 
 > Fork自react-sticky，在其基础上给StickyContainer增加了target属性，用于指定监听滚动的dom
 如：
