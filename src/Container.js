@@ -1,93 +1,93 @@
-import React, { PureComponent } from "react";
-import PropTypes from "prop-types";
-import raf from "raf";
+import React, { PureComponent } from 'react'
+import PropTypes from 'prop-types'
+import raf from 'raf'
 
 export default class Container extends PureComponent {
   static childContextTypes = {
     subscribe: PropTypes.func,
     unsubscribe: PropTypes.func,
-    getParent: PropTypes.func
-  };
+    getParent: PropTypes.func,
+  }
+
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      target: props.target,
+    }
+  }
+
+  getTarget() {
+    return this.state.target || window
+  }
 
   getChildContext() {
     return {
       subscribe: this.subscribe,
       unsubscribe: this.unsubscribe,
-      getParent: this.getParent
-    };
+      getParent: this.getParent,
+    }
   }
 
-  events = [
-    "resize",
-    "scroll",
-    "touchstart",
-    "touchmove",
-    "touchend",
-    "pageshow",
-    "load"
-  ];
+  events = ['resize', 'scroll', 'touchstart', 'touchmove', 'touchend', 'pageshow', 'load']
 
-  subscribers = [];
+  subscribers = []
 
-  rafHandle = null;
+  rafHandle = null
 
-  subscribe = handler => {
-    this.subscribers = this.subscribers.concat(handler);
-  };
+  subscribe = (handler) => {
+    this.subscribers = this.subscribers.concat(handler)
+  }
 
-  unsubscribe = handler => {
-    this.subscribers = this.subscribers.filter(current => current !== handler);
-  };
+  unsubscribe = (handler) => {
+    this.subscribers = this.subscribers.filter((current) => current !== handler)
+  }
 
-  notifySubscribers = evt => {
+  notifySubscribers = (evt) => {
     if (!this.framePending) {
-      const { currentTarget } = evt;
+      const { currentTarget } = evt
 
       this.rafHandle = raf(() => {
-        this.framePending = false;
-        const { top, bottom } = this.node.getBoundingClientRect();
+        this.framePending = false
+        const { top, bottom } = this.node.getBoundingClientRect()
 
-        this.subscribers.forEach(handler =>
+        this.subscribers.forEach((handler) =>
           handler({
             distanceFromTop: top,
             distanceFromBottom: bottom,
-            eventSource: currentTarget === window ? document.body : this.node
+            eventSource: currentTarget === this.getTarget() ? document.body : this.node,
           })
-        );
-      });
-      this.framePending = true;
+        )
+      })
+      this.framePending = true
     }
-  };
+  }
 
-  getParent = () => this.node;
+  getParent = () => this.node
 
   componentDidMount() {
-    this.events.forEach(event =>
-      window.addEventListener(event, this.notifySubscribers)
-    );
+    this.events.forEach((event) => this.getTarget().addEventListener(event, this.notifySubscribers))
   }
 
   componentWillUnmount() {
     if (this.rafHandle) {
-      raf.cancel(this.rafHandle);
-      this.rafHandle = null;
+      raf.cancel(this.rafHandle)
+      this.rafHandle = null
     }
 
-    this.events.forEach(event =>
-      window.removeEventListener(event, this.notifySubscribers)
-    );
+    this.events.forEach((event) => this.getTarget().removeEventListener(event, this.notifySubscribers))
   }
 
   render() {
     return (
       <div
         {...this.props}
-        ref={node => (this.node = node)}
+        ref={(node) => (this.node = node)}
         onScroll={this.notifySubscribers}
         onTouchStart={this.notifySubscribers}
         onTouchMove={this.notifySubscribers}
         onTouchEnd={this.notifySubscribers}
       />
-    );
+    )
   }
 }
